@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.uniovi.entities.*;
 import com.uniovi.services.SecurityService;
 import com.uniovi.services.UsersService;
+import com.uniovi.validators.AddUserFormValidator;
+import com.uniovi.validators.ModifyUserFormValidator;
 import com.uniovi.validators.SignUpFormValidator;
 
 @Controller
@@ -20,9 +22,12 @@ public class UsersController {
 
 	@Autowired
 	private SecurityService securityService;
-
 	@Autowired
 	private SignUpFormValidator signUpFormValidator;
+	@Autowired
+	private ModifyUserFormValidator modifyUserFormValidator;
+	@Autowired
+	private AddUserFormValidator addUserFormValidator;
 
 	@RequestMapping("/user/list")
 	public String getListado(Model model) {
@@ -30,15 +35,21 @@ public class UsersController {
 		return "user/list";
 	}
 
-	@RequestMapping(value = "/user/add")
+	@RequestMapping(value = "/user/add", method = RequestMethod.GET)
 	public String getUser(Model model) {
-		model.addAttribute("usersList", usersService.getUsers());
+		model.addAttribute("user", new User());
 		return "user/add";
 	}
 
 	@RequestMapping(value = "/user/add", method = RequestMethod.POST)
-	public String setUser(@ModelAttribute User user) {
-		usersService.addUser(user);
+	public String setUser(@Validated User user, BindingResult result) {
+		addUserFormValidator.validate(user, result);
+		user.setPassword("123456");
+		user.setPasswordConfirm(user.getPassword()); 
+		if (result.hasErrors()) {
+			return "/user/add";
+		}
+		usersService.addUser(user);	
 		return "redirect:/user/list";
 	}
 
@@ -54,24 +65,35 @@ public class UsersController {
 		return "redirect:/user/list";
 	}
 
-	@RequestMapping(value = "/user/edit/{id}")
+	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.GET)
 	public String getEdit(Model model, @PathVariable Long id) {
 		User user = usersService.getUser(id);
 		model.addAttribute("user", user);
 		return "user/edit";
 	}
-
-	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.POST)
-	public String setEdit(Model model, @PathVariable Long id, @ModelAttribute User user) {
-		user.setId(id);
-		usersService.addUser(user);
-		return "redirect:/user/details/" + id;
-	}
+	
+		
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
 		model.addAttribute("user", new User());
 		return "signup";
+	}
+	
+		
+	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.POST)
+	public String setEdit(@Validated User user, BindingResult result) {
+		modifyUserFormValidator.validate(user, result);
+		User original = usersService.getUser(user.getId());
+		if (result.hasErrors()) {
+			return "user/edit";
+		}
+		
+		//no sé dar la opción de cambiar la contraseña, están encriptadas.. dejo la que estaba
+		user.setPassword(original.getPassword());
+		user.setPasswordConfirm(original.getPasswordConfirm());
+		usersService.addUser(user);
+		return "redirect:/user/list";
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -96,6 +118,7 @@ public class UsersController {
 		String dni = auth.getName();
 		User activeUser = usersService.getUserByDni(dni);
 		model.addAttribute("markList", activeUser.getMarks());
+		model.addAttribute("completeName", activeUser.getFullName());
 		return "home";
 	}
 

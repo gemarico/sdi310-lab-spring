@@ -7,17 +7,23 @@
 	<nav th:replace="fragments/nav" />
 
 	<div class="container">
-		<h2 th:text="#{mark.details}"></h2>
+		<h2 th:text="#{user.details}"></h2>
 		<div class="panel panel-default">
 			<div class="panel-heading" th:text="#{dni.message}"></div>
-			<div class="panel-body" th:text="${mark.user.dni}"></div>
+			<div class="panel-body" th:text="${user.dni}"></div>
+		</div>
+	
+	<div class="panel panel-default">
+			<div class="panel-heading" th:text="#{name.message}"></div>
+			<div class="panel-body" th:text="${user.name}"></div>
 		</div>
 	
 		<div class="panel panel-default">
-			<div class="panel-heading" th:text="#{mark.score}"></div>
-			<div class="panel-body" th:text="${mark.score}"></div>
+			<div class="panel-heading" th:text="#{lastName.message}"></div>
+			<div class="panel-body" th:text="${user.lastName}"></div>
 		</div>
-	</div>
+		
+	</div>	
 
 	<footer th:replace="fragments/footer" />
 
