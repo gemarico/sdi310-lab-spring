@@ -15,7 +15,6 @@ public class MarksControllers {
 
 	@Autowired // Inyectar el servicio
 	private MarksService marksService;
-	
 
 	@RequestMapping("/mark/list")
 	public String getList(Model model) {
@@ -57,6 +56,12 @@ public class MarksControllers {
 		mark.setId(id);
 		marksService.addMark(mark);
 		return "redirect:/mark/details/" + id;
+	}
+
+	@RequestMapping("/mark/list/update")
+	public String updateList(Model model) {
+		model.addAttribute("markList", marksService.getMarks());
+		return "mark/list :: tableMarks";
 	}
 
 }
