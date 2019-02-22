@@ -1,11 +1,8 @@
 package com.uniovi.controllers;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +32,7 @@ public class MarksControllers {
 	private AddMarkFormValidator addMarkFormValidator;
 
 	@RequestMapping("/mark/list")
-	public String getList(Model model) {		
+	public String getList(Model model) {
 		model.addAttribute("markList", marksService.getMarks());
 		return "mark/list";
 	}
@@ -95,5 +92,19 @@ public class MarksControllers {
 		model.addAttribute("markList", marksService.getMarks());
 		return "mark/list :: tableMarks";
 	}
+
+	@RequestMapping(value = "/mark/list/{id}/resend", method = RequestMethod.GET)
+	public String setResendTrue(Model model, @PathVariable Long id) {
+		marksService.setMarkResend(true, id);
+		return "redirect:/mark/list";
+	}
+
+	@RequestMapping(value = "/mark/list/{id}/noresend", method = RequestMethod.GET)
+	public String setResendFalse(Model model, @PathVariable Long id) {
+		marksService.setMarkResend(false, id);
+		return "redirect:/mark/list";
+	}
+
+	
 
 }

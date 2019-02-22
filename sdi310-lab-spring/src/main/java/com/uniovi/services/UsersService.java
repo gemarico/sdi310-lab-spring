@@ -1,6 +1,9 @@
 package com.uniovi.services;
 
 import java.util.*;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,9 +18,9 @@ public class UsersService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-//	@PostConstruct
-//	public void init() {
-//	}
+	@PostConstruct
+	public void init() {
+	}
 
 	public List<User> getUsers() {
 		List<User> users = new ArrayList<User>();

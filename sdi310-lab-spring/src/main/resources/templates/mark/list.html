@@ -7,7 +7,7 @@
 	<nav th:replace="fragments/nav" />
 
 	<div class="container">
-		<h2 th:text="#{marks.message}"></h2>		
+		<h2 th:text="#{marks.message}"></h2>
 		<p th:text="#{marksInSystem.message}"></p>
 		<button type="button" id="updateButton" class="btn btn-default"
 			th:text="#{update.message}"></button>
@@ -36,9 +36,41 @@
 						<td th:text="${mark.score}"></td>
 						<td><a th:href="${'/mark/details/' + mark.id}"
 							th:text="#{mark.details}"></a></td>
-						<td><a th:href="${'/mark/edit/' + mark.id}"
-							th:text="#{modify.message}"></a></td>
-						<td><a th:href="${'/mark/delete/' + mark.id}"
+
+						<td><a sec:authorize="hasRole('ROLE_PROFESSOR')"
+							th:href="${'/mark/edit/' + mark.id}" th:text="#{modify.message}"></a>
+							<div sec:authorize="hasRole('ROLE_STUDENT')">
+								<div th:if="${mark.resend}">
+									<button type="button" th:id="${'resendButton' + mark.id}"
+										class="btn btn-info">Reenviar</button>
+									<script th:inline="javascript">
+										 /*<![CDATA[*/
+										$( "#resendButton[[${mark.id}]]" ).click(function() {
+										 $.get( "/mark/list/[[${mark.id}]]/noresend", function( data ) {
+										 $("#tableMarks").load('/mark/list/update');
+											 });
+										 });
+										/*]]>*/
+									</script>
+								</div>
+								<div th:unless="${mark.resend}">
+
+									<button type="button" th:id="${'noresendButton' + mark.id}"
+										class="btn btn-default">No reenviar</button>
+									<script th:inline="javascript">
+										 /*<![CDATA[*/
+										$( "#noresendButton[[${mark.id}]]" ).click(function() {
+										 $.get( "/mark/list/[[${mark.id}]]/resend", function( data ) {
+										 $("#tableMarks").load('/mark/list/update');
+										 });
+										});
+										 /*]]>*/
+										 </script>
+								
+								</div>
+							</div></td>
+						<td><a sec:authorize="hasRole('ROLE_PROFESSOR')"
+							th:href="${'/mark/delete/' + mark.id}"
 							th:text="#{delete.message}"></a></td>
 					</tr>
 				</tbody>
