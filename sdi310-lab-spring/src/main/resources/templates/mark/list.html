@@ -7,9 +7,10 @@
 	<nav th:replace="fragments/nav" />
 
 	<div class="container">
-		<h2 th:text="#{marks.message}"></h2>
+		<h2 th:text="#{marks.message}"></h2>		
 		<p th:text="#{marksInSystem.message}"></p>
-		<button type="button" id="updateButton" class="btn btn-default" th:text="#{update.message}"></button>
+		<button type="button" id="updateButton" class="btn btn-default"
+			th:text="#{update.message}"></button>
 		<script>
 			$("#updateButton").click(function() {
 				$("#tableMarks").load('/mark/list/update');
@@ -33,9 +34,12 @@
 						<td th:text="${mark.id}"></td>
 						<td th:text="${mark.description}"></td>
 						<td th:text="${mark.score}"></td>
-						<td><a th:href="${'/mark/details/' + mark.id}" th:text="#{mark.details}"></a></td>
-						<td><a th:href="${'/mark/edit/' + mark.id}" th:text="#{modify.message}"></a></td>
-						<td><a th:href="${'/mark/delete/' + mark.id}" th:text="#{delete.message}"></a></td>
+						<td><a th:href="${'/mark/details/' + mark.id}"
+							th:text="#{mark.details}"></a></td>
+						<td><a th:href="${'/mark/edit/' + mark.id}"
+							th:text="#{modify.message}"></a></td>
+						<td><a th:href="${'/mark/delete/' + mark.id}"
+							th:text="#{delete.message}"></a></td>
 					</tr>
 				</tbody>
 			</table>
