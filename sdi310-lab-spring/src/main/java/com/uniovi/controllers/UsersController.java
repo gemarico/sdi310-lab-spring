@@ -1,6 +1,12 @@
 package com.uniovi.controllers;
 
+import java.security.Principal;
+import java.util.LinkedList;
+
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,8 +38,18 @@ public class UsersController {
 	private RolesService rolesService;
 
 	@RequestMapping("/user/list")
-	public String getListado(Model model) {
-		model.addAttribute("usersList", usersService.getUsers());
+	public String getListado(Model model, Pageable pageable, Principal principal,
+			@RequestParam(value = "", required = false) String searchText) {
+		String dni = principal.getName(); // DNI es el name de la autenticación
+		User user = usersService.getUserByDni(dni);
+		Page<User> users = new PageImpl<User>(new LinkedList<User>());
+		if (searchText != null && !searchText.isEmpty()) {
+			users = usersService.searchUsers(pageable, searchText, user);
+		} else {
+			users = usersService.getUsers(pageable, user);
+		}
+		model.addAttribute("usersList", users.getContent());
+		model.addAttribute("page", users);
 		return "user/list";
 	}
 
@@ -50,7 +66,7 @@ public class UsersController {
 		if (result.hasErrors()) {
 			return "/user/add";
 		}
-		usersService.addUser(user);	
+		usersService.addUser(user);
 		return "redirect:/user/list";
 	}
 
@@ -72,16 +88,13 @@ public class UsersController {
 		model.addAttribute("user", user);
 		return "user/edit";
 	}
-	
-		
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String signup(Model model) {
 		model.addAttribute("user", new User());
 		return "signup";
 	}
-	
-		
+
 	@RequestMapping(value = "/user/edit/{id}", method = RequestMethod.POST)
 	public String setEdit(@Validated User user, BindingResult result) {
 		modifyUserFormValidator.validate(user, result);
@@ -89,8 +102,9 @@ public class UsersController {
 		if (result.hasErrors()) {
 			return "user/edit";
 		}
-		
-		//no sé dar la opción de cambiar la contraseña, están encriptadas.. dejo la que estaba
+
+		// no sé dar la opción de cambiar la contraseña, están encriptadas.. dejo la que
+		// estaba
 		user.setPassword(original.getPassword());
 		user.setPasswordConfirm(original.getPasswordConfirm());
 		usersService.addUser(user);

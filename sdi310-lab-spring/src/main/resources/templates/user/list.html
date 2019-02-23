@@ -6,6 +6,13 @@
 	<nav th:replace="fragments/nav" />
 	<div class="container">
 		<h2 th:text="#{users.message}"></h2>
+		<form class="navbar-form" action="/user/list">
+			<div class="form-group">
+				<input name="searchText" type="text" class="form-control" size="50"
+					placeholder="Buscar por nombre de usuario">
+			</div>
+			<button type="submit" class="btn btn-default">Buscar</button>
+		</form>
 		<p th:text="#{usersInSystem.message}"></p>
 		<div class="table-responsive">
 			<table class="table table-hover">
@@ -26,13 +33,19 @@
 						<td th:text="${user.dni}"></td>
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.lastName}"></td>
-						<td><a th:href="${'/user/details/' + user.id}" th:text="#{user.details}"></a></td>
-						<td><a th:href="${'/user/edit/' + user.id}" th:text="#{modify.message}"></a></td>
-						<td><a th:href="${'/user/delete/' + user.id}" th:text="#{delete.message}"></a></td>
+						<td><a th:href="${'/user/details/' + user.id}"
+							th:text="#{user.details}"></a></td>
+						<td><a th:href="${'/user/edit/' + user.id}"
+							th:text="#{modify.message}"></a></td>
+						<td><a th:href="${'/user/delete/' + user.id}"
+							th:text="#{delete.message}"></a></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
+
+		<footer th:replace="fragments/pagination" />
+
 	</div>
 	<footer th:replace="fragments/footer" />
 </body>

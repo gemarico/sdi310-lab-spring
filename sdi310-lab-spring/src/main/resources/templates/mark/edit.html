@@ -9,7 +9,7 @@
 	<div class="container">
 		<h2 th:text="#{mark.edit}"></h2>
 		<form class="form-horizontal" method="post"
-			th:action="${'/mark/edit/' + mark.id}" th:object="${mark}>
+			th:action="${'/mark/edit/' + mark.id}" th:object="${mark}">
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="description"
 					th:text="#{mark.description}"></label>
