@@ -20,9 +20,7 @@ public class PO_Properties {
 	//static Properties p = new Properties();
 	public PO_Properties(String Path) //throws FileNotFoundException, IOException 
 	{
-		this.Path = Path;
-		//p.load(new FileReader(Path));
-		//p.getProperty()
+		PO_Properties.Path = Path;
 	}
 	//
 	// locale is de index in idioms array.
